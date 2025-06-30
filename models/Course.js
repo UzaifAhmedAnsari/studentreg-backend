@@ -38,21 +38,21 @@
           type: String,
           required: true,
         },
-        price: { // Price field
+        price: {
           type: Number,
           required: true,
           default: 0,
         },
-        imageUrl: { // Course thumbnail/image URL
-          type: String,
-          required: false,
-        },
-        category: { // Category field
+        // imageUrl: { // <-- Yeh field remove kar diya hai
+        //   type: String,
+        //   required: false,
+        // },
+        category: {
           type: String,
           required: false,
           default: 'General',
         },
-        modules: [moduleSchema], // Modules array
+        modules: [moduleSchema],
       },
       {
         timestamps: true,

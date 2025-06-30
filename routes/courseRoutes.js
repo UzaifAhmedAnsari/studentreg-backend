@@ -38,7 +38,7 @@
     // @route   POST /api/courses
     // @access  Private/Instructor
     router.post('/', protect, authorize(['Instructor']), async (req, res) => {
-      const { title, description, price, imageUrl, category, modules } = req.body;
+      const { title, description, price, category, modules } = req.body; // imageUrl hata diya
 
       try {
         const course = new Course({
@@ -46,7 +46,7 @@
           title,
           description,
           price,
-          imageUrl,
+          // imageUrl, // <-- Yeh line hata di hai
           category,
           modules: modules || [],
         });
@@ -63,7 +63,7 @@
     // @route   PUT /api/courses/:id
     // @access  Private/Instructor
     router.put('/:id', protect, authorize(['Instructor']), async (req, res) => {
-      const { title, description, price, imageUrl, category, modules } = req.body;
+      const { title, description, price, category, modules } = req.body; // imageUrl hata diya
 
       try {
         const course = await Course.findById(req.params.id);
@@ -79,7 +79,7 @@
         course.title = title || course.title;
         course.description = description || course.description;
         course.price = price !== undefined ? price : course.price;
-        course.imageUrl = imageUrl || course.imageUrl;
+        // course.imageUrl = imageUrl || course.imageUrl; // <-- Yeh line hata di hai
         course.category = category || course.category;
         course.modules = modules !== undefined ? modules : course.modules;
 
