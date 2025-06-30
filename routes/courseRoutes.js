@@ -38,7 +38,7 @@
     // @route   POST /api/courses
     // @access  Private/Instructor
     router.post('/', protect, authorize(['Instructor']), async (req, res) => {
-      const { title, description, price, imageUrl, category, modules } = req.body; // New fields
+      const { title, description, price, imageUrl, category, modules } = req.body;
 
       try {
         const course = new Course({
@@ -48,7 +48,7 @@
           price,
           imageUrl,
           category,
-          modules: modules || [], // Modules ko empty array ya provided modules se initialize karein
+          modules: modules || [],
         });
 
         const createdCourse = await course.save();
@@ -72,7 +72,6 @@
           return res.status(404).json({ message: 'Course not found' });
         }
 
-        // Make sure instructor owns the course
         if (course.user.toString() !== req.user.id) {
           return res.status(401).json({ message: 'Not authorized to update this course' });
         }
@@ -82,7 +81,7 @@
         course.price = price !== undefined ? price : course.price;
         course.imageUrl = imageUrl || course.imageUrl;
         course.category = category || course.category;
-        course.modules = modules !== undefined ? modules : course.modules; // Modules update karein
+        course.modules = modules !== undefined ? modules : course.modules;
 
         const updatedCourse = await course.save();
         res.json(updatedCourse);
@@ -103,7 +102,6 @@
           return res.status(404).json({ message: 'Course not found' });
         }
 
-        // Make sure instructor owns the course
         if (course.user.toString() !== req.user.id) {
           return res.status(401).json({ message: 'Not authorized to delete this course' });
         }

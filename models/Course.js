@@ -38,7 +38,7 @@
           type: String,
           required: true,
         },
-        price: { // Price field bhi add kar dete hain
+        price: { // Price field
           type: Number,
           required: true,
           default: 0,
@@ -52,7 +52,7 @@
           required: false,
           default: 'General',
         },
-        modules: [moduleSchema], // <-- Modules array add kiya
+        modules: [moduleSchema], // Modules array
       },
       {
         timestamps: true,

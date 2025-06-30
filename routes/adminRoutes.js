@@ -13,7 +13,7 @@
       try {
         const totalUsers = await User.countDocuments();
         const totalStudents = await User.countDocuments({ role: 'Student' });
-        const totalInstructors = await User.countDocuments({ role: 'Instructor' });
+        const totalInstructors = await User.countDocuments({ role: 'Instructor' }); // Instructors count
         const totalCourses = await Course.countDocuments();
         const totalRegistrations = await Registration.countDocuments();
 
@@ -54,7 +54,6 @@
           return res.status(404).json({ message: 'User not found' });
         }
 
-        // Admin cannot change their own role or delete themselves for safety
         if (user._id.toString() === req.user.id) {
           return res.status(400).json({ message: 'Admin cannot modify their own account via this route' });
         }
@@ -79,12 +78,11 @@
           return res.status(404).json({ message: 'User not found' });
         }
 
-        // Admin cannot delete themselves for safety
         if (user._id.toString() === req.user.id) {
           return res.status(400).json({ message: 'Admin cannot delete their own account' });
         }
 
-        await user.deleteOne(); // Use deleteOne()
+        await user.deleteOne();
         res.json({ message: 'User deleted successfully' });
       } catch (error) {
         console.error(error);
@@ -92,7 +90,9 @@
       }
     });
 
-    // Existing courses route...
+    // @desc    Get all courses (Admin view)
+    // @route   GET /api/admin/courses
+    // @access  Private/Admin
     router.get('/courses', protect, authorize(['Admin']), async (req, res) => {
       try {
         const courses = await Course.find({});
