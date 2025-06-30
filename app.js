@@ -10,8 +10,8 @@
     const app = express();
 
     // CORS middleware
-    app.use(cors({
-      origin: 'https://studentreg-frontend-app.vercel.app', // <-- Yahan apni Vercel frontend URL dalen
+    app.use(cors({   
+      origin: 'https://studentreg-frontend.vercel.app/', // <-- Yahan apni Vercel frontend URL dalen
       credentials: true
     }));
 
