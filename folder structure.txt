@@ -1,0 +1,27 @@
+/backend
+|-- config/
+|   |-- db.js
+|-- controllers/
+|   |-- authController.js
+|   |-- courseController.js
+|   |-- registrationController.js
+|   |-- subscriptionController.js
+|   |-- adminController.js
+|-- middleware/
+|   |-- authMiddleware.js
+|   |-- roleMiddleware.js
+|-- models/
+|   |-- User.js
+|   |-- Course.js
+|   |-- Registration.js
+|   |-- Subscription.js
+|-- routes/
+|   |-- authRoutes.js
+|   |-- courseRoutes.js
+|   |-- registrationRoutes.js
+|   |-- subscriptionRoutes.js
+|   |-- adminRoutes.js
+|-- services/
+|   |-- emailService.js
+|-- .env
+|-- app.js
