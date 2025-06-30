@@ -13,7 +13,7 @@
 
     // CORS middleware - allow frontend origin
     app.use(cors({
-      origin: 'https://uzaifahmedansari.github.io/studentreg-frontend/', // Aapke frontend ka URL
+      origin: 'https://studentreg-frontend-app.vercel.app', // Aapke frontend ka URL
       credentials: true
     }));
 
