@@ -13,7 +13,7 @@
 
     // CORS middleware - allow frontend origin
     app.use(cors({
-      origin: 'http://localhost:5173', // Aapke frontend ka URL
+      origin: 'https://studentreg-frontend-app.vercel.app/', // Aapke frontend ka URL
       credentials: true
     }));
 
