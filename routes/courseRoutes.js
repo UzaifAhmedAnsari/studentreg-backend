@@ -1,27 +1,120 @@
-// routes/courseRoutes.js
-const express = require('express');
-const router = express.Router();
-const {
-    createCourse,
-    getAllCourses,
-    getCourseById,
-    updateCourse,
-    deleteCourse,
-    getCourseRegistrations // Naya function import kiya
-} = require('../controllers/courseController');
-const { protect } = require('../middleware/authMiddleware');
-const { is } = require('../middleware/roleMiddleware');
+    // backend/routes/courseRoutes.js
+    const express = require('express');
+    const router = express.Router();
+    const { protect, authorize } = require('../middleware/authMiddleware');
+    const Course = require('../models/Course');
 
-router.route('/')
-    .post(protect, is('Admin', 'Instructor'), createCourse)
-    .get(getAllCourses); // Public route for getting all courses
+    // @desc    Get all courses
+    // @route   GET /api/courses
+    // @access  Public
+    router.get('/', async (req, res) => {
+      try {
+        const courses = await Course.find({});
+        res.json(courses);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+      }
+    });
 
-router.route('/:id')
-    .get(getCourseById) // Public route for getting single course
-    .put(protect, is('Admin', 'Instructor'), updateCourse)
-    .delete(protect, is('Admin', 'Instructor'), deleteCourse);
+    // @desc    Get single course by ID
+    // @route   GET /api/courses/:id
+    // @access  Public
+    router.get('/:id', async (req, res) => {
+      try {
+        const course = await Course.findById(req.params.id);
+        if (course) {
+          res.json(course);
+        } else {
+          res.status(404).json({ message: 'Course not found' });
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+      }
+    });
 
-// Naya route instructors ya admins ke liye course ke enrollments dekhne ke liye
-router.get('/:id/registrations', protect, is('Admin', 'Instructor'), getCourseRegistrations);
+    // @desc    Create a new course
+    // @route   POST /api/courses
+    // @access  Private/Instructor
+    router.post('/', protect, authorize(['Instructor']), async (req, res) => {
+      const { title, description, price, imageUrl, category, modules } = req.body; // New fields
 
-module.exports = router;
+      try {
+        const course = new Course({
+          user: req.user._id,
+          title,
+          description,
+          price,
+          imageUrl,
+          category,
+          modules: modules || [], // Modules ko empty array ya provided modules se initialize karein
+        });
+
+        const createdCourse = await course.save();
+        res.status(201).json(createdCourse);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+      }
+    });
+
+    // @desc    Update a course
+    // @route   PUT /api/courses/:id
+    // @access  Private/Instructor
+    router.put('/:id', protect, authorize(['Instructor']), async (req, res) => {
+      const { title, description, price, imageUrl, category, modules } = req.body;
+
+      try {
+        const course = await Course.findById(req.params.id);
+
+        if (!course) {
+          return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Make sure instructor owns the course
+        if (course.user.toString() !== req.user.id) {
+          return res.status(401).json({ message: 'Not authorized to update this course' });
+        }
+
+        course.title = title || course.title;
+        course.description = description || course.description;
+        course.price = price !== undefined ? price : course.price;
+        course.imageUrl = imageUrl || course.imageUrl;
+        course.category = category || course.category;
+        course.modules = modules !== undefined ? modules : course.modules; // Modules update karein
+
+        const updatedCourse = await course.save();
+        res.json(updatedCourse);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+      }
+    });
+
+    // @desc    Delete a course
+    // @route   DELETE /api/courses/:id
+    // @access  Private/Instructor
+    router.delete('/:id', protect, authorize(['Instructor']), async (req, res) => {
+      try {
+        const course = await Course.findById(req.params.id);
+
+        if (!course) {
+          return res.status(404).json({ message: 'Course not found' });
+        }
+
+        // Make sure instructor owns the course
+        if (course.user.toString() !== req.user.id) {
+          return res.status(401).json({ message: 'Not authorized to delete this course' });
+        }
+
+        await course.deleteOne();
+        res.json({ message: 'Course removed' });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Server Error' });
+      }
+    });
+
+    module.exports = router;
+    
