@@ -11,7 +11,7 @@
 
     // CORS middleware
     app.use(cors({   
-      origin: 'https://studentreg-frontend.vercel.app/', // <-- Yahan apni Vercel frontend URL dalen
+      origin: 'https://studentreg-frontend-qx35.vercel.app/', // <-- Yahan apni Vercel frontend URL dalen
       credentials: true
     }));
 
