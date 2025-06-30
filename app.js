@@ -11,7 +11,7 @@
 
     // CORS middleware
     app.use(cors({   
-      origin: FRONTEND_URL, // <-- Yahan apni Vercel frontend URL dalen
+      origin: process.env.FRONTEND_URL, // <-- Yahan apni Vercel frontend URL dalen
       credentials: true
     }));
 
